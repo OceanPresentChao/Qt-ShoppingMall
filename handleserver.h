@@ -14,6 +14,7 @@ class HandleServer:public QObject
 public:
     HandleServer(SQLServer*);
     void jsonResReady(QString head,QJsonArray res,qintptr port,QString errmsg="");
+    QString getRandomOrderNum();
 private:
     SQLServer *sql;
     void handleLogin(QJsonObject body,qintptr port);
@@ -24,7 +25,9 @@ private:
     void handleUpdateCart(QJsonObject body,qintptr port);
     void handleSearchCart(QJsonObject body,qintptr port);
     void handleBuySth(QJsonObject body,qintptr port);
-    bool createOrderItems(QJsonArray order);
+    bool createOrderItems(QJsonArray order,QString ordernum);
+    void handleSearchOrder(QJsonObject body,qintptr port);
+    void handleSearchOrderItems(QJsonObject body,qintptr port);
 
 public slots:
     void handleRequest(const QString&,const qintptr, const QByteArray);

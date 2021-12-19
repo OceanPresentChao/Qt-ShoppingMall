@@ -71,7 +71,16 @@ void HandleServer::handleRequest(const QString& ip,const qintptr port, const QBy
                             break;
                         }
                         break;
-
+                    case 4:
+                        switch (flag_ins) {
+                        case 4:
+                            handleSearchOrder(body,port);
+                            break;
+                        case 5:
+                            handleSearchOrderItems(body,port);
+                            break;
+                        }
+                        break;
                     }
                 }
                 else{jsonResReady("2",QJsonArray(),port,"没有报文主体！");return;}
@@ -201,8 +210,8 @@ void HandleServer::handleBuySth(QJsonObject body, qintptr port){
             jsonResReady("3",QJsonArray(),port,"查询用户失败！");return;
         }
         int money = _result[0].toObject().value("user_money").toString().toInt();
-        //查询用户购物车总额
-        obj2.insert("want",QJsonValue("cart_pro_id,pro_name,pro_amount,pro_sales,cart_num,pro_price*cart_num AS pro_tolprice"));
+        //查询用户购物车
+        obj2.insert("want",QJsonValue("cart_pro_id,pro_name,pro_amount,pro_sales,cart_num,pro_price,pro_price*cart_num AS pro_tolprice"));
         obj2.insert("restriction",QJsonValue(QString("products.pro_id = cartitems.cart_pro_id AND cart_user_id = user_id AND user_id = %1").arg(_user_id)));
         flag = sql->selectSth("users,products,cartitems",obj2,_allwant);
         if(!flag){
@@ -211,10 +220,11 @@ void HandleServer::handleBuySth(QJsonObject body, qintptr port){
         if(_allwant.isEmpty()){jsonResReady("3",QJsonArray(),port,"查询数据失败！");return;}
         int tolprice = 0;
         QJsonArray wannabuy = body.value("wannabuy").toArray();
+        //将用户的整个购物车信息转换成map
         QJsonObject map;
         for(int i = 0;i < _allwant.size(); i++){
             QJsonObject tmpobj = _allwant[i].toObject();
-            map.insert(tmpobj.value("cart_pro_id").toString(),tmpobj);//将用户的购物车信息转换成map
+            map.insert(tmpobj.value("cart_pro_id").toString(),tmpobj);
         }
         for(int i = 0;i < wannabuy.size(); i++){
             QJsonObject _obj = map.value(wannabuy[i].toString()).toObject();
@@ -240,8 +250,8 @@ void HandleServer::handleBuySth(QJsonObject body, qintptr port){
             jsonResReady("1",response,port);
             qDebug()<<"购买成功！"<<"tolprice:"<<tolprice<<"money"<<money;
             //更新商品余量和销量
-            for(int i = 0;i < map.keys().size(); i++){
-                QJsonObject tmpobj = map.value(map.keys().at(i)).toObject();
+            for(int i = 0;i < wannabuy.size(); i++){
+                QJsonObject tmpobj = map.value(wannabuy[i].toString()).toObject();
                 int _cart_num = tmpobj.value("cart_num").toString().toInt();
                 int _pro_num = tmpobj.value("pro_amount").toString().toInt();
                 int _pro_sale = tmpobj.value("pro_sales").toString().toInt();
@@ -276,23 +286,65 @@ void HandleServer::handleBuySth(QJsonObject body, qintptr port){
             }
             QJsonObject order_obj;
             QDateTime curDateTime=QDateTime::currentDateTime();
+            QString ordernum = getRandomOrderNum();
             order_obj.insert("order_time",curDateTime.toString("yyyy-MM-dd hh:mm:ss"));
             order_obj.insert("order_user_id",QString::number(_user_id));
             order_obj.insert("order_tolprice",QString::number(tolprice));
+            order_obj.insert("order_id",ordernum);
             bool flag = sql->insertSth("orders",order_obj);
-            if(flag){
-                jsonResReady("1",order,port);
+            if(flag && createOrderItems(order,ordernum)){
+                jsonResReady("1",QJsonArray(),port);
             }
-            else{jsonResReady("3",QJsonArray(),port,"更新购物车失败！");return;}
-
+            else{jsonResReady("3",QJsonArray(),port,"更新订单失败！");return;}
         }
         else{jsonResReady("2",QJsonArray(),port,"您的余额不足！");qDebug()<<"余额不足！";}
     }
 }
 
-bool HandleServer::createOrderItems(QJsonArray order){
+bool HandleServer::createOrderItems(QJsonArray order,QString ordernum){
+    bool res = true;
     for(int i = 0;i < order.size(); i++){
         QJsonObject _obj = order[i].toObject();
+        int _cart_num = _obj.value("cart_num").toString().toInt();
+        int _pro_id = _obj.value("cart_pro_id").toString().toInt();
+        int _pro_price = _obj.value("pro_price").toString().toInt();
+        QJsonObject _item;
+        _item.insert("orderitem_order_id",QJsonValue(ordernum));
+        _item.insert("orderitem_pro_id",QJsonValue(QString::number(_pro_id)));
+        _item.insert("orderitem_num",QJsonValue(QString::number(_cart_num)));
+        _item.insert("orderitem_pro_price",QJsonValue(QString::number(_pro_price)));
+        bool flag = sql->insertSth("orderitems",_item);
+        res = flag == true ? true:false;
     }
+    return res;
 }
 
+QString HandleServer::getRandomOrderNum(){
+    QJsonObject obj;
+    QString context = "CONCAT('SD',DATE_FORMAT(now(), '%Y%m%d%H%i%s'),lpad(round(round(rand(),4)*1000),4,'0'))";
+    obj.insert("want",context);
+    QJsonArray result;
+    bool flag = sql->selectSth("dual",obj,result);
+    if(!flag){return "error";}
+    return result[0].toObject().value(context).toString();
+}
+
+void HandleServer::handleSearchOrder(QJsonObject body,qintptr port){
+    QString table = "orders";
+    QJsonArray result;
+    bool flag = sql->selectSth(table,body,result);
+    if(flag){
+        jsonResReady("1",result,port);
+    }
+    else{jsonResReady("3",QJsonArray(),port,"查询订单失败！");return;}
+}
+
+void HandleServer::handleSearchOrderItems(QJsonObject body, qintptr port){
+    QString table = "orders,orderitems,products";
+    QJsonArray result;
+    bool flag = sql->selectSth(table,body,result);
+    if(flag){
+        jsonResReady("1",result,port);
+    }
+    else{jsonResReady("3",QJsonArray(),port,"查询订单信息失败！");return;}
+}
