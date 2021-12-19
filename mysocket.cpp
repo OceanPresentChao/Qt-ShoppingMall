@@ -1,10 +1,12 @@
 #include "mysocket.h"
 
-MySocket::MySocket(int sockDesc, QObject *parent) :
+MySocket::MySocket(qintptr sockDesc, QObject *parent) :
     QTcpSocket(parent),
     m_sockDesc(sockDesc)
 {
     connect(this, SIGNAL(readyRead()), this, SLOT(socket_recvData()));
+    connect(this, SIGNAL(disconnected()), this, SLOT(socket_disConnected()));
+    //qDebug()<<QString("服务端socket端口：%1").arg(sockDesc);
 }
 
 MySocket::~MySocket()
@@ -12,18 +14,29 @@ MySocket::~MySocket()
 
 }
 
-void MySocket::socket_sendData(int id, const char *data)
+void MySocket::socket_sendData(qintptr id, const QByteArray data)
 {
-    if (id == m_sockDesc && data!=NULL) {
-        this->write(data,strlen(data));
+    if (id == m_sockDesc) {
+        this->write(data);
+        qDebug()<<QString("socket已发送消息 端口:%1").arg(m_sockDesc);
     }
 }
 
 void MySocket::socket_recvData(void)
 {
     QString ip = peerAddress().toString().remove(0, 7);
-    char data[1024]={0};
-    read(data,1024);
+    qintptr port = m_sockDesc;
+    QByteArray data = readAll();
 
-    emit socket_dataReady(ip, data);
+    emit socket_dataReady(ip,port, data);//有消息来了
+    qDebug()<<QString("服务端socket接受到消息 端口：%1").arg(m_sockDesc);
+}
+
+void MySocket::socket_disConnected(){
+    //qDebug()<<"Mysocket断开连接";
+    emit signal_socket_disconnected(m_sockDesc);
+}
+
+qintptr MySocket::getPort(){
+    return m_sockDesc;
 }

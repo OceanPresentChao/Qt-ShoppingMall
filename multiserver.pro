@@ -13,7 +13,9 @@ SOURCES += main.cpp\
     server.cpp \
     tcpserverthread.cpp \
     sqlserver.cpp \
-    udpserver.cpp
+    udpserver.cpp \
+    handleserver.cpp
+
 
 HEADERS  += dialog.h \
     mysocket.h \
@@ -21,6 +23,9 @@ HEADERS  += dialog.h \
     server.h \
     tcpserverthread.h \
     sqlserver.h \
-    udpserver.h
+    udpserver.h \
+    handleserver.h
 
-FORMS    += dialog.ui
+
+FORMS    += dialog.ui \
+

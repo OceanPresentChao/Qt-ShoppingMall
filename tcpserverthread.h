@@ -14,29 +14,29 @@ class TcpServerThread : public QThread
 {
     Q_OBJECT
 public:
-    TcpServerThread(int sockDesc, QObject *parent = Q_NULLPTR);
+    TcpServerThread(qintptr sockDesc, QObject *parent = Q_NULLPTR);
     ~TcpServerThread();
-    int getSocketDesc();
     MySocket* getSocket();
+    qintptr getPort();
 
 private:
     void run(void);
 
 public slots:
-    void thread_sendDataSlot(int sockDesc, const char *data);
+    void thread_sendData(qintptr sockDesc, const QByteArray data);
 
 signals:
-    void thread_dataReady(const QString &ip, const char *data);
-    void thread_sendData(int sockDesc, const char *data);
-    void disconnectTCP(int sockDesc);
+    void signal_thread_dataReady(const QString &ip,const qintptr, const QByteArray data);
+    void signal_thread_sendData(qintptr sockDesc, const QByteArray data);
+    void signal_thread_disconnect(qintptr sockDesc);
 
 private slots:   
-    void thread_recvDataSlot(const QString &ip, const char *data);
-    void disconnectToHost(void);
+    void thread_recvData(const QString &ip,const qintptr, const QByteArray data);
+    void thread_disconnectToHost(qintptr);
 
 private:
     MySocket *m_socket;
-    int m_sockDesc;
+    qintptr m_port;
 };
 
 #endif // SERVERTHREAD_H

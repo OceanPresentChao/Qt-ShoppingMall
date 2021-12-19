@@ -1,9 +1,10 @@
 #include "tcpserverthread.h"
-
-TcpServerThread::TcpServerThread(int sockDesc, QObject *parent) :
-    QThread(parent),
-    m_sockDesc(sockDesc)
+#include <QMetaType>
+TcpServerThread::TcpServerThread(qintptr sockDesc, QObject *parent) :
+    QThread(parent)
 {
+    qRegisterMetaType<qintptr>("qintptr");
+    m_port = sockDesc;
 
 }
 
@@ -14,44 +15,37 @@ TcpServerThread::~TcpServerThread()
 
 void TcpServerThread::run(void)
 {
-    m_socket = new MySocket(m_sockDesc);
-
-    if (!m_socket->setSocketDescriptor(m_sockDesc)) {
+    m_socket = new MySocket(m_port);
+    if (!m_socket->setSocketDescriptor(m_port)) {//原来这一步是必须的QAQ
         return ;
     }
-
-    connect(m_socket, &MySocket::disconnected, this, &TcpServerThread::disconnectToHost);
-    connect(m_socket, SIGNAL(socket_dataReady(const QString&, const char*)),this, SLOT(thread_recvDataSlot(const QString&, const char*)));
-    connect(this, SIGNAL(thread_sendData(int, const char*)),m_socket, SLOT(socket_sendData(int, const char*)));
+    connect(m_socket, SIGNAL(signal_socket_disconnected(qintptr)), this, SLOT(thread_disconnectToHost(qintptr)));
+    connect(m_socket, SIGNAL(socket_dataReady(const QString&,const qintptr, const QByteArray)),this, SLOT(thread_recvData(const QString&,const qintptr, const QByteArray)));//接受消息
+    connect(this, SIGNAL(signal_thread_sendData(qintptr, const QByteArray)),m_socket, SLOT(socket_sendData(qintptr, const QByteArray)));
 
     this->exec();
 }
 
-void TcpServerThread::thread_sendDataSlot(int sockDesc, const char *data)
+void TcpServerThread::thread_sendData(qintptr sockDesc, const QByteArray data)
 {
-    if (data==NULL) {
-        return ;
-    }
-
-    emit thread_sendData(sockDesc, data);
+    emit signal_thread_sendData(sockDesc, data);
 }
 
-void TcpServerThread::thread_recvDataSlot(const QString &ip, const char *data)
+void TcpServerThread::thread_recvData(const QString &ip,const qintptr port, const QByteArray data)
 {
-    emit thread_dataReady(ip, data);
+    emit signal_thread_dataReady(ip,port,data);
 }
 
-void TcpServerThread::disconnectToHost(void)
+void TcpServerThread::thread_disconnectToHost(qintptr port)
 {
-    emit disconnectTCP(m_sockDesc);
-    m_socket->disconnectFromHost();
-    this->quit();
-}
-
-int TcpServerThread::getSocketDesc(){
-    return m_sockDesc;
+    emit signal_thread_disconnect(port);
+    //qDebug()<<"线程断开连接";
 }
 
 MySocket* TcpServerThread::getSocket(){
     return m_socket;
+}
+
+qintptr TcpServerThread::getPort(){
+    return m_port;
 }

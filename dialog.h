@@ -8,7 +8,6 @@ namespace Ui {
 class Dialog;
 }
 
-class TcpServer;
 class Server;
 
 class Dialog : public QDialog
@@ -24,15 +23,13 @@ private:
     Ui::Dialog *ui;
     int m_count;
 
-public slots:
-    void dialog_recvData(const QString &ip, const char *data);
-
 private slots:
     friend class TcpServer;
-    void showConnection(int sockDesc);
-    void showDisconnection(int sockDesc);
+    void showConnection(qintptr sockDesc);
+    void showDisconnection(qintptr sockDesc);
     void clearData(void);
-
+    void showRecv(const QString&,const qintptr,const QByteArray);
+    void showSend(const QByteArray,qintptr);
 
 };
 

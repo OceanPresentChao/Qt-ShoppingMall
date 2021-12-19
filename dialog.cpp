@@ -5,6 +5,7 @@
 #include "ui_dialog.h"
 #include<QJsonDocument>
 #include<QJsonObject>
+#include<QDateTime>
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Dialog),
@@ -13,9 +14,10 @@ Dialog::Dialog(QWidget *parent) :
     ui->setupUi(this);
     setWindowFlags(this->windowFlags() | Qt::WindowMinMaxButtonsHint);
 
-    connect(ui->btnClear,SIGNAL(clicked()),this, SLOT(clearData()));
-
     TotalServer = new Server(this);
+    connect(ui->btnClear,SIGNAL(clicked()),this, SLOT(clearData()));
+    connect(TotalServer->tcpserver,SIGNAL(signal_newConnection(qintptr)),this,SLOT(showConnection(qintptr)));
+    connect(TotalServer->tcpserver,SIGNAL(signal_disConnection(qintptr)),this,SLOT(showDisconnection(qintptr)));
 }
 
 Dialog::~Dialog()
@@ -23,7 +25,7 @@ Dialog::~Dialog()
     delete ui;
 }
 
-void Dialog::showConnection(int sockDesc)
+void Dialog::showConnection(qintptr sockDesc)
 {
     m_count++;
 
@@ -33,35 +35,36 @@ void Dialog::showConnection(int sockDesc)
     ui->labelNum->setText(QString("%1").arg(m_count));
 }
 
-void Dialog::showDisconnection(int sockDesc)
+void Dialog::showDisconnection(qintptr sockDesc)
 {
     m_count--;
     //ui->comboBoxObj->clear();
-    int index = ui->comboBoxObj->findData(sockDesc);
+    int index = ui->comboBoxObj->findData(int(sockDesc));
     ui->comboBoxObj->removeItem(index);
     ui->labelNum->setText(QString("%1").arg(m_count));
-
-}
-
-void Dialog::dialog_recvData(const QString &ip, const char *data)
-{
-    QString msg;
-    QString content=data;
-     msg += content + "\n";
-    ui->textBrowser->append(msg);
 }
 
 void Dialog::clearData(void)
 {
     ui->textBrowser->clear();
 }
-/*
-void Dialog::test(){
-    QJsonObject p;
-    p.insert("name","chao");
-    p.insert("age",19);
-    QJsonDocument document;
-    document.setObject(p);
-    QByteArray arr = document.toJson();
+
+void Dialog::showRecv(const QString& ip,const qintptr port,const QByteArray data){
+    QDateTime curDateTime=QDateTime::currentDateTime();
+    QString time = "时间:" + curDateTime.toString("yyyy-MM-dd hh:mm:ss");
+    QJsonDocument document = QJsonDocument::fromJson(data);
+    QJsonObject obj = document.object();
+    QString head = obj.value("head").toString();
+    QString content = QString(time + "\n" + "服务器->端口:%1 报文头部:" + head + "\n").arg(port);
+    ui->textBrowser->append(content);
 }
-*/
+
+void Dialog::showSend(const QByteArray data,qintptr port){
+    QDateTime curDateTime=QDateTime::currentDateTime();
+    QString time = "时间:" + curDateTime.toString("yyyy-MM-dd hh:mm:ss");
+    QJsonDocument document = QJsonDocument::fromJson(data);
+    QJsonObject obj = document.object();
+    QString head = obj.value("head").toString();
+    QString content = QString(time + "\n" + "端口:%1->服务器 报文头部:" + head + "\n").arg(port);
+    ui->textBrowser->append(content);
+}
