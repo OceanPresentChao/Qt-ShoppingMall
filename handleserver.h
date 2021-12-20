@@ -17,7 +17,8 @@ public:
     QString getRandomOrderNum();
 private:
     SQLServer *sql;
-    void handleLogin(QJsonObject body,qintptr port);
+    void handleUserLogin(QJsonObject body,qintptr port);
+    void handleManagerLogin(QJsonObject body,qintptr port);
     void handleRegister(QJsonObject body,qintptr port);
     void handleSearchProduct(QJsonObject body,qintptr port);
     void handleAddCart(QJsonObject body,qintptr port);

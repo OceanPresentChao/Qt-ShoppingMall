@@ -29,7 +29,8 @@ void HandleServer::handleRequest(const QString& ip,const qintptr port, const QBy
                     case 1://登入或登出
                         switch (flag_ins) {
                         case 1:
-                            handleLogin(body,port);
+                            if(flag_character == 1){handleUserLogin(body,port);}
+                            if(flag_character == 2){handleManagerLogin(body,port);}
                             break;
                         case 2:
                             handleRegister(body,port);
@@ -107,8 +108,18 @@ void HandleServer::jsonResReady(QString head,QJsonArray res,qintptr port,QString
     emit signal_responeReady(byteArray,port);
 }
 
-void HandleServer::handleLogin(QJsonObject body, qintptr port){
+void HandleServer::handleUserLogin(QJsonObject body, qintptr port){
     QString table = "users";
+    QJsonArray res;
+    bool flag = sql->selectSth(table,body,res);
+    if(flag){
+        jsonResReady("1",res,port);
+    }
+    else{jsonResReady("3",QJsonArray(),port,"查询用户名失败！");return;}
+}
+
+void HandleServer::handleManagerLogin(QJsonObject body, qintptr port){
+    QString table = "managers";
     QJsonArray res;
     bool flag = sql->selectSth(table,body,res);
     if(flag){
