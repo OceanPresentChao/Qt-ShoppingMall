@@ -25,7 +25,7 @@ private:
     void handleUpdateCart(QJsonObject body,qintptr port);
     void handleSearchCart(QJsonObject body,qintptr port);
     void handleBuySth(QJsonObject body,qintptr port);
-    bool createOrderItems(QJsonArray order,QString ordernum);
+    bool createOrderItems(QJsonArray wannabuy,QJsonObject map,QString ordernum);
     void handleSearchOrder(QJsonObject body,qintptr port);
     void handleSearchOrderItems(QJsonObject body,qintptr port);
 

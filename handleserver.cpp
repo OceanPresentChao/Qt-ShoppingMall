@@ -279,11 +279,6 @@ void HandleServer::handleBuySth(QJsonObject body, qintptr port){
                  jsonResReady("3",QJsonArray(),port,"更新用户数据失败！");return;
             }
             //生成订单
-            QJsonArray order;
-            for(int i = 0;i < map.keys().size(); i++){
-                QJsonObject tmpobj = map.value(map.keys().at(i)).toObject();
-                order.push_back(tmpobj);
-            }
             QJsonObject order_obj;
             QDateTime curDateTime=QDateTime::currentDateTime();
             QString ordernum = getRandomOrderNum();
@@ -292,7 +287,7 @@ void HandleServer::handleBuySth(QJsonObject body, qintptr port){
             order_obj.insert("order_tolprice",QString::number(tolprice));
             order_obj.insert("order_id",ordernum);
             bool flag = sql->insertSth("orders",order_obj);
-            if(flag && createOrderItems(order,ordernum)){
+            if(flag && createOrderItems(wannabuy,map,ordernum)){
                 jsonResReady("1",QJsonArray(),port);
             }
             else{jsonResReady("3",QJsonArray(),port,"更新订单失败！");return;}
@@ -301,10 +296,10 @@ void HandleServer::handleBuySth(QJsonObject body, qintptr port){
     }
 }
 
-bool HandleServer::createOrderItems(QJsonArray order,QString ordernum){
+bool HandleServer::createOrderItems(QJsonArray wannabuy,QJsonObject map,QString ordernum){
     bool res = true;
-    for(int i = 0;i < order.size(); i++){
-        QJsonObject _obj = order[i].toObject();
+    for(int i = 0;i < wannabuy.size(); i++){
+        QJsonObject _obj = map.value(wannabuy[i].toString()).toObject();
         int _cart_num = _obj.value("cart_num").toString().toInt();
         int _pro_id = _obj.value("cart_pro_id").toString().toInt();
         int _pro_price = _obj.value("pro_price").toString().toInt();
@@ -343,6 +338,7 @@ void HandleServer::handleSearchOrderItems(QJsonObject body, qintptr port){
     QString table = "orders,orderitems,products";
     QJsonArray result;
     bool flag = sql->selectSth(table,body,result);
+    qDebug()<<"orderitems num:"<<result.size();
     if(flag){
         jsonResReady("1",result,port);
     }

@@ -55,7 +55,7 @@ void Dialog::showRecv(const QString& ip,const qintptr port,const QByteArray data
     QJsonDocument document = QJsonDocument::fromJson(data);
     QJsonObject obj = document.object();
     QString head = obj.value("head").toString();
-    QString content = QString(time + "\n" + "端口:%1->服务器:%1 报文头部:" + head + "\n").arg(port);
+    QString content = QString(time + "\n" + "端口:%1->服务器: 报文头部:" + head + "\n").arg(port);
     ui->textBrowser->append(content);
 }
 
@@ -65,6 +65,6 @@ void Dialog::showSend(const QByteArray data,qintptr port){
     QJsonDocument document = QJsonDocument::fromJson(data);
     QJsonObject obj = document.object();
     QString head = obj.value("head").toString();
-    QString content = QString(time + "\n" + "服务器->端口 报文头部:" + head + "\n").arg(port);
+    QString content = QString(time + "\n" + "服务器->端口:%1 报文头部:" + head + "\n").arg(port);
     ui->textBrowser->append(content);
 }
