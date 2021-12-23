@@ -1,44 +1,28 @@
-<<<<<<< HEAD
-# QtMultiThreadTcpServer
-A multi-thread tcp server base on Qt
-=======
-# 世界尽头与冷酷仙境
-
+# 吉林大学软件学院C++课程设计
 #### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+2021年吉林大学软件学院C++荣誉课课程设计
+
+主题：微商系统
+
+使用技术：C++/Qt、Mysql、TCP/IP
 
 #### 软件架构
-软件架构说明
-
-
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
+三个大端：服务端、客户端（买家端）、业务端（卖家端）
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  需要连Mysql数据库才能正常使用
 
 #### 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+1.  潮海波
 
 
-#### 特技
+#### 优点
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
->>>>>>> 5dfe08be3b73899ac4e44eece077a91d2ddc5ae3
+1.  日式、二次元UI界面（雾
+2.  较好的缓存系统
+3.  稳定的逻辑
+4.  可以切换UI
+5.  自定义报文，额外添加或舍去操作灵活方便
+6.  对SQL语句，处理报文操作有良好的封装

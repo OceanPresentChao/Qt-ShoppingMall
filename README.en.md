@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 世界尽头与冷酷仙境
+=======
+# 吉林大学软件学院C++课程设计
+>>>>>>> da2e35c686e9365fd48b0de1ac92aec465d4d49b
 
 #### Description
 {**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
