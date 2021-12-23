@@ -11,6 +11,9 @@ Server::Server(QObject *parent):QObject(parent)
     tcpserver->listen(QHostAddress::Any,520);
 
     handleserver = new HandleServer(sqlserver);
+
+    udpserver = new UdpServer();
+
     connect(tcpserver,SIGNAL(signal_recvData(const QString&,const qintptr,const QByteArray)),handleserver,SLOT(handleRequest(const QString&,const qintptr, const QByteArray)));
     connect(handleserver,SIGNAL(signal_responeReady(const QByteArray,qintptr)),tcpserver,SLOT(sendResponse(const QByteArray ,qintptr)));
 

@@ -82,6 +82,8 @@ void HandleServer::handleRequest(const QString& ip,const qintptr port, const QBy
                             break;
                         }
                         break;
+                    default:
+                        break;
                     }
                 }
                 else{jsonResReady("2",QJsonArray(),port,"没有报文主体！");return;}
@@ -316,6 +318,7 @@ bool HandleServer::createOrderItems(QJsonArray wannabuy,QJsonObject map,QString 
         int _pro_price = _obj.value("pro_price").toString().toInt();
         QJsonObject _item;
         _item.insert("orderitem_order_id",QJsonValue(ordernum));
+        _item.insert("orderitem_time",QJsonValue(ordernum));
         _item.insert("orderitem_pro_id",QJsonValue(QString::number(_pro_id)));
         _item.insert("orderitem_num",QJsonValue(QString::number(_cart_num)));
         _item.insert("orderitem_pro_price",QJsonValue(QString::number(_pro_price)));
@@ -355,3 +358,5 @@ void HandleServer::handleSearchOrderItems(QJsonObject body, qintptr port){
     }
     else{jsonResReady("3",QJsonArray(),port,"查询订单信息失败！");return;}
 }
+
+

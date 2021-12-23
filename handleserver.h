@@ -7,6 +7,7 @@
 #include<QJsonDocument>
 #include<QJsonParseError>
 #include"sqlserver.h"
+#include"tcpserver.h"
 
 class HandleServer:public QObject
 {
@@ -17,6 +18,7 @@ public:
     QString getRandomOrderNum();
 private:
     SQLServer *sql;
+    TcpServer *tcp;
     void handleUserLogin(QJsonObject body,qintptr port);
     void handleManagerLogin(QJsonObject body,qintptr port);
     void handleRegister(QJsonObject body,qintptr port);
