@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/icons/icon1.png</file>
+        <file>images/icons/icon2.png</file>
+        <file>images/icons/icon3.png</file>
+        <file>images/icons/picerror.png</file>
+        <file>images/login/1.png</file>
+        <file>images/login/7.png</file>
+        <file>images/picturewall/1.png</file>
+        <file>images/picturewall/10.png</file>
+        <file>images/picturewall/2.png</file>
+        <file>images/picturewall/3.png</file>
+        <file>images/picturewall/4.png</file>
+        <file>images/picturewall/5.png</file>
+        <file>images/picturewall/6.png</file>
+        <file>images/picturewall/7.png</file>
+        <file>images/picturewall/8.png</file>
+        <file>images/picturewall/9.png</file>
+        <file>images/products/1.png</file>
+        <file>images/products/10.png</file>
+        <file>images/products/2.png</file>
+        <file>images/products/3.png</file>
+        <file>images/products/4.png</file>
+        <file>images/products/5.png</file>
+        <file>images/products/6.png</file>
+        <file>images/products/7.png</file>
+        <file>images/products/8.png</file>
+        <file>images/products/9.png</file>
+        <file>images/products/picerror.jpg</file>
+        <file>images/users/82342070_p0-min.jpg</file>
+        <file>images/users/illust_35548907_20190130_151911-min.jpg</file>
+        <file>images/users/illust_54355379_20190130_152051-min.jpg</file>
+        <file>images/users/illust_58445343_20190421_183611-min.png</file>
+    </qresource>
+</RCC>

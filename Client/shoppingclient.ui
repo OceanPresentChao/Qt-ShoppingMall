@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ShoppingClient</class>
+ <widget class="QWidget" name="ShoppingClient">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>799</width>
+    <height>607</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>潮海波の商店</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QStackedWidget" name="PageStack">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="currentIndex">
+      <number>4</number>
+     </property>
+     <widget class="HomePage" name="HomeP"/>
+     <widget class="ShopPage" name="ShopP"/>
+     <widget class="ContactPage" name="ContactP"/>
+     <widget class="CartPage" name="CartP"/>
+     <widget class="OrderPage" name="OrderP"/>
+     <widget class="MePage" name="MeP"/>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="SlideNavigation" name="BottomNav" native="true"/>
+   </item>
+  </layout>
+  <zorder>BottomNav</zorder>
+  <zorder>PageStack</zorder>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SlideNavigation</class>
+   <extends>QWidget</extends>
+   <header location="global">slidenavigation.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HomePage</class>
+   <extends>QWidget</extends>
+   <header location="global">./Home/homepage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ShopPage</class>
+   <extends>QWidget</extends>
+   <header location="global">./Shop/shoppage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ContactPage</class>
+   <extends>QWidget</extends>
+   <header location="global">./Contact/contactpage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CartPage</class>
+   <extends>QWidget</extends>
+   <header location="global">./Cart/cartpage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MePage</class>
+   <extends>QWidget</extends>
+   <header location="global">./Me/mepage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OrderPage</class>
+   <extends>QWidget</extends>
+   <header location="global">./Order/orderpage.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
